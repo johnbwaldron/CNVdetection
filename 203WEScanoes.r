@@ -57,12 +57,17 @@ source("https://raw.githubusercontent.com/johnbwaldron/genes/master/CANOES.R")
     # with that goal in mind, there is no need to create the list, it makes sense to me to directly write the file with wach sample
     #dir.create("C:/Users/Public/GELCCgenotypes/")
 # for loop genotypeCNVs, but limit the xcnvs to one sample at a time.
-sample.names <- colnames(counts)[-c(1:5)]
+sample.names <- as.vector(unique(xcnvs$SAMPLE)) #colnames(counts)[-c(1:5)]
+g <- as.data.frame(matrix( ncol = 5))
+colnames(g)<- c("INTERVAL", "NQDel", "SQDel", "NQDup", "SQDup")
 for (i in 1:length(sample.names)){
     CNVs <- subset(xcnvs, SAMPLE %in% sample.names[i])
-    genotypesBySample <- GenotypeCNVs(CNVs, sample.names[i], canoes.reads)
-
-    write.table(genotypesBySample, file=paste("C:/Users/Public/GELCCgenotypes/", sample.names[i], "Genotypes.csv", sep=""), row.names=FALSE, quote=TRUE, sep=",")
+    if(nrow(CNVs)>0){
+        genotypesBySample <- GenotypeCNVs(CNVs, sample.names[i], canoes.reads)
+        }
+    g<- rbind(g, genotypesBySample)
+    genotypesBySample < data.frame()
+    write.table(g, file=paste("C:/Users/Public/GELCCgenotypes/", sample.names[i], "Genotypes.csv", sep=""), row.names=FALSE, quote=TRUE, sep=",")
     cat("completed ", i, " of ", length(sample.names)," samples\n")
     }
 ########################################################################################################################################
