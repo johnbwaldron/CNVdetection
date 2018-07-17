@@ -62,8 +62,8 @@ for (n in 1:203){
 
 #, sep="\t"
 # to run at waldron residence: #### canoes.reads <- read.table(file="C:/Users/Public/canoesReads.csv",  header = TRUE, sep=",")
-# to run in Mandal Lab (Dell by the door): ## RAW.canoes.reads <- read.table(file="C:/Users/jwaldr/Desktop/GELCCdata/GELCC_204samples_canoes.reads.txt")
-# to run in Mandal Lab (Dell by the door): ## write.table(canoes.reads, file="C:/Users/jwaldr/Desktop/GELCCdata/canoesReads.csv", row.names=FALSE, quote=TRUE, sep=",")
+                            # to modify and store in Mandal Lab (Dell by the door): ## RAW.canoes.reads <- read.table(file="C:/Users/jwaldr/Desktop/GELCCdata/GELCC_204samples_canoes.reads.txt")
+                            # to modify and store in Mandal Lab (Dell by the door): ## write.table(canoes.reads, file="C:/Users/jwaldr/Desktop/GELCCdata/canoesReads.csv", row.names=FALSE, quote=TRUE, sep=",")
 # to run in Mandal Lab (Dell by the door): ## canoes.reads <- read.table(file="C:/Users/jwaldr/Desktop/GELCCdata/canoesReads.csv",  header = TRUE, sep=",")
 
 
