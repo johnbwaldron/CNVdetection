@@ -50,7 +50,7 @@ xcnvs <- do.call('rbind', xcnv.list)
 xcnvs <- read.table(file="C:/Users/Public/xcnvs.csv",  header = TRUE, sep=",")
 canoes.reads <- read.table(file="C:/Users/Public/canoesReads.csv",  header = TRUE, sep=",")
 counts <- subset(canoes.reads, !chromosome %in% c("chrX", "chrY", "X", "Y"))
-source("https://raw.githubusercontent.com/johnbwaldron/genes/master/CANOES.R")
+source("https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/CANOES.R")
 
 # genotype all the CNV calls made above in samples
     # rather than append all CNVs for each sample to single file, I think I'll create a file for each genotyped cnv. 
