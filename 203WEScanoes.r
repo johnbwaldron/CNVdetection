@@ -47,8 +47,26 @@ xcnvs <- do.call('rbind', xcnv.list)
 ####################################################FOR FIGURING OUT GENOTYPING########################################################
 #write.table(xcnvs, file="C:/Users/Public/xcnvs.csv", row.names=FALSE, quote=TRUE, sep=",")
 #write.table(canoes.reads, file="C:/Users/Public/canoesReads.csv", row.names=FALSE, quote=TRUE, sep=",")
+
+#xcnvs generated at Waldron residence 7/12/18
 xcnvs <- read.table(file="C:/Users/Public/xcnvs.csv",  header = TRUE, sep=",")
-canoes.reads <- read.table(file="C:/Users/Public/canoesReads.csv",  header = TRUE, sep=",")
+
+#xcnvs generated at LCRC 7/16/18
+xcnvs <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/xcnvsGELCC203WESsamples7.16.18.txt",  header = TRUE, stringsAsFactors = FALSE)
+##NEED TO CHANGE SAMPLES NAMES TO CORRECT sample identifier used elsewhere 
+#sample.names <- read.table("https://raw.githubusercontent.com/johnbwaldron/genes/master/bamNameOnly.tsv", row.names="V1")
+#sample.names <- rownames(sample.names)
+for (n in 1:203){
+    xcnvs[which(xcnvs$SAMPLE == paste("S", n, sep="")),1] <- sample.names[n]
+        }
+
+#, sep="\t"
+# to run at waldron residence: #### canoes.reads <- read.table(file="C:/Users/Public/canoesReads.csv",  header = TRUE, sep=",")
+# to run in Mandal Lab (Dell by the door): ## RAW.canoes.reads <- read.table(file="C:/Users/jwaldr/Desktop/GELCCdata/GELCC_204samples_canoes.reads.txt")
+# to run in Mandal Lab (Dell by the door): ## write.table(canoes.reads, file="C:/Users/jwaldr/Desktop/GELCCdata/canoesReads.csv", row.names=FALSE, quote=TRUE, sep=",")
+# to run in Mandal Lab (Dell by the door): ## canoes.reads <- read.table(file="C:/Users/jwaldr/Desktop/GELCCdata/canoesReads.csv",  header = TRUE, sep=",")
+
+
 counts <- subset(canoes.reads, !chromosome %in% c("chrX", "chrY", "X", "Y"))
 source("https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/CANOES.R")
 
@@ -60,14 +78,17 @@ source("https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/CANOE
 sample.names <- as.vector(unique(xcnvs$SAMPLE)) #colnames(counts)[-c(1:5)]
 g <- as.data.frame(matrix( ncol = 5))
 colnames(g)<- c("INTERVAL", "NQDel", "SQDel", "NQDup", "SQDup")
+
 for (i in 1:length(sample.names)){
     CNVs <- subset(xcnvs, SAMPLE %in% sample.names[i])
+    genotypesBySample <- data.frame()
     if(nrow(CNVs)>0){
         genotypesBySample <- GenotypeCNVs(CNVs, sample.names[i], canoes.reads)
         }
     g<- rbind(g, genotypesBySample)
-    genotypesBySample < data.frame()
-    write.table(g, file=paste("C:/Users/Public/GELCCgenotypes/", sample.names[i], "Genotypes.csv", sep=""), row.names=FALSE, quote=TRUE, sep=",")
+    
+    #write.table(g, file=paste("C:/Users/Public/GELCCgenotypes/", sample.names[i], "Genotypes.csv", sep=""), row.names=FALSE, quote=TRUE, sep=",")
+    write.table(g, file=paste("C:/Users/jwaldr/Desktop/GELCCdata/", sample.names[i], "Genotypes.csv", sep=""), row.names=FALSE, quote=TRUE, sep=",")
     cat("completed ", i, " of ", length(sample.names)," samples\n")
     }
 ########################################################################################################################################
