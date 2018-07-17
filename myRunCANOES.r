@@ -1,3 +1,5 @@
+######Run 7/11/18 and completed 7/12/18
+
 #Rterm.exe --vanilla
 #install.packages(c("nnls", "Hmisc", "mgcv", "plyr"))
 # Not necessary to load the libraries because they're loaded in the CANOES.R functions
