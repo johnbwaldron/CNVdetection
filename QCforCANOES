@@ -17,16 +17,36 @@ for(i in sample.names){
 CNVnums$CNVs[which(CNVnums$SAMPLE==i)] <- length(which(xcnvs==i))
 }
 
-# first, is the data normaly distributed? ...the answer is NO, not even close
+# first, is the data normaly distributed? ...the answer is NO, not even close...and accordingly, the mean is 4 times the median. 
+#as a result, I think is it most reasonable to remove those samples that are greater than the MEDIAN + 2 times the interquartile range
 shapiro.test(CNVnums$CNVs)
 
 # calculate IQR
 interquart <- IQR(CNVnums$CNVs)
+med <- median(CNVnums$CNVs)
 
-#Read in the gc content per probe/capture oligos (do you call them probes when their in solution and tagged with beads?
-gc <- read.table("https://raw.githubusercontent.com/johnbwaldron/genes/master/lungcancerwes81616.gc.txt")$V2
+QCsample.names <- CNVnums[which(CNVnums$CNVs<= med+2*interquart),1]
 
 #read in CANOES functions
 source("https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/CANOES.R")
 
-#load CANOES.reads
+#load CANOES.reads (in Mandal Lab - Dell by the door) [at waldron residence: canoes.reads <- read.table(file="C:/Users/Public/canoesReads.csv",  header = TRUE, sep=",")]
+canoes.reads <- read.table(file="C:/Users/jwaldr/Desktop/GELCCdata/canoesReads.csv",  header = TRUE, sep=",")
+counts <- subset(canoes.reads, !chromosome %in% c("chrX", "chrY", "X", "Y"))
+counts$chromosome <- as.numeric(counts$chromosome) # otherwise, the chromosomes are factors and the statistic functions aren't relevant
+
+#Call CNVs on QC subset of samples CANOES
+xcnv.list <- vector('list', length(QCsample.names))
+
+# call CNVs in each sample
+for (i in 1:length(QCsample.names)){
+    xcnv.list[[i]] <- CallCNVs(QCsample.names[i], counts)
+  }
+
+# combine the results into one data frame
+xcnvs <- do.call('rbind', xcnv.list)
+
+#save file
+write.table(xcnvs, file="C:/Users/jwaldr/Desktop/GELCCdata/QCxcnvs.csv", row.names=FALSE, quote=TRUE, sep=",")
+
+
