@@ -1,0 +1,9 @@
+#Rterm.exe --vanilla
+
+library("nnls")
+library("Hmisc")
+library("mgcv")
+library("plyr")
+
+#Read in the gc content per probe/capture oligos (do you call them probes when their in solution and tagged with beads?
+gc <- read.table("https://raw.githubusercontent.com/johnbwaldron/genes/master/lungcancerwes81616.gc.txt")$V2
