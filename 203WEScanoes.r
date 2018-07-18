@@ -45,6 +45,8 @@ for (i in 1:length(sample.names)){
 xcnvs <- do.call('rbind', xcnv.list)
 
 ####################################################FOR GENOTYPING########################################################
+#############################CallCNVs calls the Genotyping function to produce the Q_SOME score###########################
+
 #write.table(xcnvs, file="C:/Users/Public/xcnvs.csv", row.names=FALSE, quote=TRUE, sep=",")
 #write.table(canoes.reads, file="C:/Users/Public/canoesReads.csv", row.names=FALSE, quote=TRUE, sep=",")
 
@@ -68,6 +70,7 @@ xcnvs <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdete
 
 
 counts <- subset(canoes.reads, !chromosome %in% c("chrX", "chrY", "X", "Y"))
+counts$chromosome <- as.numeric(counts$chromosome) # otherwise, the chromosomes are factors and the statistic functions aren't relevant
 source("https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/CANOES.R")
 
 # genotype all the CNV calls made above in samples
@@ -83,7 +86,7 @@ for (i in 1:length(sample.names)){
     CNVs <- subset(xcnvs, SAMPLE %in% sample.names[i])
     genotypesBySample <- data.frame()
     if(nrow(CNVs)>0){
-        genotypesBySample <- GenotypeCNVs(CNVs, sample.names[i], counts)
+        genotypesBySample <- GenotypeCNVs(CNVs, sample.names[i], canoes.reads)
         }
     genotypesBySample$SAMPLE <- sample.names[i]
     g <- rbind(g, genotypesBySample)
@@ -92,6 +95,7 @@ for (i in 1:length(sample.names)){
     write.table(g, file=paste("C:/Users/jwaldr/Desktop/GELCCdata/", sample.names[i], "Genotypes.csv", sep=""), row.names=FALSE, quote=TRUE, sep=",")
     cat("completed ", i, " of ", length(sample.names)," samples\n")
     }
+#In Ops.factor(chromosome[2:num.nonzero.exons], chromosome[1:(num.nonzero.exons -  : '-' not meaningful for factors
 ########################################################################################################################################
 
 # GenotypeCNVs
