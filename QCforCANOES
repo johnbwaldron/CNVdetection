@@ -5,5 +5,28 @@ library("Hmisc")
 library("mgcv")
 library("plyr")
 
+# load xcnvs
+xcnvs <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/xcnvsLCRC7.16.18withSampleNames.csv",  header = TRUE, stringsAsFactors = FALSE, sep=",")
+
+#create vector of sample names
+sample.names <- as.vector(unique(xcnvs$SAMPLE))
+CNVnums <- data.frame(SAMPLE=sample.names)
+
+#tally up the number of calls per sample # Maybe I could do this with an sapply/lapply, but i'm not sure how...
+for(i in sample.names){
+CNVnums$CNVs[which(CNVnums$SAMPLE==i)] <- length(which(xcnvs==i))
+}
+
+# first, is the data normaly distributed? ...the answer is NO, not even close
+shapiro.test(CNVnums$CNVs)
+
+# calculate IQR
+interquart <- IQR(CNVnums$CNVs)
+
 #Read in the gc content per probe/capture oligos (do you call them probes when their in solution and tagged with beads?
 gc <- read.table("https://raw.githubusercontent.com/johnbwaldron/genes/master/lungcancerwes81616.gc.txt")$V2
+
+#read in CANOES functions
+source("https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/CANOES.R")
+
+#load CANOES.reads
