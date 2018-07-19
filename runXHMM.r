@@ -4,47 +4,45 @@
 run GATK
 
 ########Kirsten's command line entry - i don't get all the pieces.################
-# Kirsten and the XHMM tutorial used GATK 3.8 for read depth and preparation for XHMM: I am going to use 4.0
-find ./ -name "*.bam" | parallel 'java -Xmx3072m -jar GenomeAnalysisTK.jar\
--T DepthOfCoverage -I {} -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
--R ucsc.hg19.fasta -dt BY_SAMPLE -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable \
---minBaseQuality 0 --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 \
---includeRefNSites --countType COUNT_FRAGMENTS -o {.}.out'
+# Kirsten and the XHMM tutorial used GATK 3.8 for read depth and preparation for XHMM: 
+run GATK read depth using parallel (each file separately) :
+find ./ -name "*.bam" | parallel 'java -Xmx3072m -jar GenomeAnalysisTK.jar -T DepthOfCoverage -I {} -L Agilent_S03723424_SureSelect_Human_All_Exon_V4+UTRs_hg19.capture.bed -R Homo_sapiens.GRCh37.75_chr1-22XYMT.fa -dt BY_SAMPLE -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable --minBaseQuality 0 --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 --includeRefNSites --countType COUNT_FRAGMENTS -o {.}.out'
 
-##################### from XHMM documentation ########################################
+##################### from Kirsten's XHMM documentation ########################################
 
 find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | 
--T DepthOfCoverage -I {} -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
--R /home/BIO/johnw/GELCC_WES_RAW_Data/ucsc.hg19.fasta \
+
+java -Xmx3072m -jar GenomeAnalysisTK.jar -T DepthOfCoverage \
+-I /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/179c22e6dd9b4840a0ed6b0862525307.bam \
+-L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
+-R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta \
 -dt BY_SAMPLE -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable \
 --minBaseQuality 0 --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 \
 --includeRefNSites \
 --countType COUNT_FRAGMENTS \
--o {.}.out'
+-o 4aa8787b9bbd42a49d72fc0dd326743f.out
 
-############################ I need to use the GATK 4.0 documentation################################3333
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################ I could use GATK 4.0 for read depth################################3333
 https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.5.0/org_broadinstitute_hellbender_tools_CountReads.php
 
 find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | 
 
-java -jar GenomeAnalysisTK.jar \
-   -T DepthOfCoverage \
-   -R reference.fasta \
-   -o 24500a1d7cf4487dbc1053197f3f3e73.out\
-   -I /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/24500a1d7cf4487dbc1053197f3f3e73.bam\
-   -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed\
-   -dt BY_SAMPLE \
-   -dcov 5000 \
-   -l INFO \
-   --omitDepthOutputAtEachBase \
-   --omitLocusTable \
-   --minBaseQuality 0 \
-   --minMappingQuality 20 \
-   --start 1 \
-   --stop 5000 \
-   --nBins 200 \
-   --includeRefNSites \
-   --countType COUNT_FRAGMENTS
+
 
 
 
