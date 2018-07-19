@@ -8,9 +8,8 @@ run GATK
 run GATK read depth using parallel (each file separately) :
 find ./ -name "*.bam" | parallel 'java -Xmx3072m -jar GenomeAnalysisTK.jar -T DepthOfCoverage -I {} -L Agilent_S03723424_SureSelect_Human_All_Exon_V4+UTRs_hg19.capture.bed -R Homo_sapiens.GRCh37.75_chr1-22XYMT.fa -dt BY_SAMPLE -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable --minBaseQuality 0 --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 --includeRefNSites --countType COUNT_FRAGMENTS -o {.}.out'
 
-##################### from Kirsten's XHMM documentation ########################################
+##################### Trying Read Counts for a Sinlge Sample ########################################
 
-find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | 
 
 java -Xmx3072m -jar GenomeAnalysisTK.jar -T DepthOfCoverage \
 -I /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/179c22e6dd9b4840a0ed6b0862525307.bam \
@@ -22,9 +21,13 @@ java -Xmx3072m -jar GenomeAnalysisTK.jar -T DepthOfCoverage \
 --countType COUNT_FRAGMENTS \
 -o 4aa8787b9bbd42a49d72fc0dd326743f.out
 
+##################### Trying Read Counts for all 203 samples ########################################
 
+find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | gnu_parallel 'java -Xmx3072m -jar GenomeAnalysisTK.jar -T DepthOfCoverage -I {} -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed -R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta -dt BY_SAMPLE -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable --minBaseQuality 0 --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 --includeRefNSites --countType COUNT_FRAGMENTS -o {.}.out'
 
+###Trying with just two files initially########33
 
+find /home/BIO/johnw/GELCC_WES_RAW_Data/TRY2 -name "*.bam" | gnu_parallel 'java -Xmx3072m -jar GenomeAnalysisTK.jar -T DepthOfCoverage -I {} -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed -R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta -dt BY_SAMPLE -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable --minBaseQuality 0 --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 --includeRefNSites --countType COUNT_FRAGMENTS -o {.}.out'
 
 
 
