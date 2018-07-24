@@ -2,30 +2,65 @@
 
 ######################################PREPROCESSING#############################################################
 # I think it worthwhile to update the alignments and recalibrate the quality scores. 
-# Along with this preprocessing, it's probably worth processing (and padding) the interval list (bed) too.
+#However, I don't think this should be a priority. While I think that aligning the reads with hg38 will provide a more accurate read depth because coding variants are more likely to align with and have higher quality scores with hg38, comparison with SNP analysis results, and the fact that the exome probes were created from the hg19, it is not a priority as of now.
+# Along with this preprocessing, it's probably worth processing (and padding) the interval list (bed) too. (Maybe)
   To do:    
-    update alignments to more recent genome release (gatk RevertSam)
+   #--> update alignments to more recent genome release (gatk RevertSam)
     Map to Reference (BWA, MergeBamAlignments)
     Mark Duplicates and Sort (MarkDuplicates, SortSam)
     Quality Score Recalibration (BaseRecalibrator, Apply Recalibration, AnalyzeCovariates)
   ######################################PREPROCESSING#############################################################
-#~/disk_big/gatk-4.0.6.0$ ./gatk 
-######################################PROCESSING#############################################################
-    #read counts
-    ./gatk CollectReadCounts \
-          -I /home/BIO/johnw/disk_big/Mandal_project/GELCC_WES_RAW_Data/2_GELCC_bam_files/0110663a349e483d985fa10e0f96108b.bam \
-          -L /home/BIO/tarun/disk_big/Mandal_project/S04380219_Padded.bed \
+
+/home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk AnnotateIntervals \
+          -R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta \
+          -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
           --interval-merging-rule OVERLAPPING_ONLY \
-          -O /home/BIO/johnw/disk_big/Mandal_project/GELCC_WES_RAW_Data/WESGATKout/sample.counts.hdf5
-          
+          -O annotated_intervals.tsv
+ 
 
 
 
+######################################PROCESSING#############################################################
+###############
+#read counts  -- one at time
+    
+    /home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk CollectReadCounts \
+          -I /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/0110663a349e483d985fa10e0f96108b.bam \
+          -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
+          -R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta \
+          --interval-merging-rule OVERLAPPING_ONLY \
+          -O /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/sample.counts.hdf5
+
+  ####### -- all of 'em -- pwd = /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT   
+
+find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | gnu_parallel '/home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk CollectReadCounts \
+          -I {} \
+          -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
+          -R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta \
+          --interval-merging-rule OVERLAPPING_ONLY \
+          -O {/.}.counts.hdf5'
 
 
 
+## DenoiseReadCounts paste back in: 2_GELCC_bam_files
+
+find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.counts.hdf5" | gnu_parallel '/home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk DenoiseReadCounts \
+    -I {} \
+    --annotated-intervals /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/annotated_intervals.tsv \
+    --standardized-copy-ratios {/.}.standardizedCR.tsv \
+    --denoised-copy-ratios {/.}.denoisedCR.tsv'
 
 
+#### DetermineGermlineContigPloidy
+source activate gatk
+gatk DetermineGermlineContigPloidy \
+   --input normal_1.counts.hdf5 \
+   --input normal_2.counts.hdf5 \
+   ... \
+   --contig-ploidy-priors a_valid_ploidy_priors_table.tsv
+   --output output_dir \
+   --output-prefix normal_cohort
+ 
 
 ##################################################################################################
 uploading the BAM files:
