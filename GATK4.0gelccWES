@@ -1,14 +1,4 @@
-
-uploading the BAM files:
-
-Linux Commands for copying files to server:        
-  /media/johnw/My Book$ sudo scp -r GELCC_WES_RAW_Data/* tarun@155.58.220.250:/home/BIO/tarun/disk_big/Mandal_project
-
-  sudo scp -r /media/tarun/My\ Book/GELCC_WES_RAW_Data johnw@155.58.220.250:/home/BIO/johnw/disk_big/Mandal_project
-  
-  sudo scp /home/BIO/tarun/Downloads/S04380219_Padded.bed tarun@155.58.220.250:/home/BIO/tarun/disk_big/Mandal_project
-  
-
+####Working on Hicks Lab Workstation (nearest conference room door::nearest elevators)
 
 ######################################PREPROCESSING#############################################################
 # I think it worthwhile to update the alignments and recalibrate the quality scores. 
@@ -28,6 +18,27 @@ Linux Commands for copying files to server:
           --interval-merging-rule OVERLAPPING_ONLY \
           -O /home/BIO/johnw/disk_big/Mandal_project/GELCC_WES_RAW_Data/WESGATKout/sample.counts.hdf5
           
+
+
+
+
+
+
+
+
+
+##################################################################################################
+uploading the BAM files:
+
+Linux Commands for copying files to server:        
+  /media/johnw/My Book$ sudo scp -r GELCC_WES_RAW_Data/* tarun@155.58.220.250:/home/BIO/tarun/disk_big/Mandal_project
+
+  sudo scp -r /media/tarun/My\ Book/GELCC_WES_RAW_Data johnw@155.58.220.250:/home/BIO/johnw/disk_big/Mandal_project
+  
+  sudo scp /home/BIO/tarun/Downloads/S04380219_Padded.bed tarun@155.58.220.250:/home/BIO/tarun/disk_big/Mandal_project
+  
+
+
                 
           
           
