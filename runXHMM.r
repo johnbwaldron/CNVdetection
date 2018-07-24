@@ -250,9 +250,10 @@ fdc852d7b18a4f3a83e449891c232823.out.sample_interval_summary
 #############################################################################################33
 Skip for now because I get "permission denied" message
 # run PLINK/Seq to calculate the fraction of repeat-masked bases in each target and create a list of those to filter out:
+
 /home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/sources/scripts/interval_list_to_pseq_reg /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed > ./EXOME.targets.reg
 
-/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plink/pseq . loc-load --locdb ./EXOME.targets.LOCDB --file ./EXOME.targets.reg --group targets --out ./EXOME.targets.LOCDB.loc-load
+/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plink-1.07-x86_64/pseq . loc-load --locdb ./EXOME.targets.LOCDB --file ./EXOME.targets.reg --group targets --out ./EXOME.targets.LOCDB.loc-load
 
 pseq . loc-stats --locdb ./EXOME.targets.LOCDB --group targets --seqdb ./seqdb | \
 awk '{if (NR > 1) print $_}' | sort -k1 -g | awk '{print $10}' | paste ./EXOME.interval_list - | \
