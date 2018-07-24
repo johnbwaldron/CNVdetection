@@ -71,3 +71,21 @@ xcnvs <- do.call('rbind', xcnv.list)
 #Waldron Residence
 write.table(xcnvs, file="C:/Users/Public/afterQCXcnvs.csv", row.names=FALSE, quote=TRUE, sep=",")
 
+
+###############################compare xcnvs before QC to after QC ################################
+
+prior.xcnvs <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/addedGELCC.toSamplesInXcnvs.csv",  header = TRUE, stringsAsFactors = FALSE, sep=",")
+
+post.xcnvs <- read.table(file="C:/Users/Public/afterQCXcnvs.csv", header = TRUE, stringsAsFactors = FALSE, sep=",")
+
+#sample.names directly from post QC xcnvs
+sample.names <- as.vector(unique(post.xcnvs$SAMPLE))
+CNVnums <- data.frame(SAMPLE=sample.names)
+
+#tally up the number of calls per sample # Maybe I could do this with an sapply/lapply, but i'm not sure how...
+for(i in sample.names){
+    w <- which(CNVnums$SAMPLE==i)
+    CNVnums$priorQC.CNVs[w] <- length(which(prior.xcnvs==i))
+    CNVnums$postQC.CNVs[w] <- length(which(post.xcnvs==i))
+    CNVnums$Diff[w] <- CNVnums$postQC.CNVs[w]-CNVnums$postQC.CNVs[w]
+}
