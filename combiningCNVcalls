@@ -1,1 +1,40 @@
-###load xcnvs
+#Rterm.exe --vanilla
+
+library("nnls")
+library("Hmisc")
+library("mgcv")
+library("plyr")
+
+# load xcnvs
+   CANOES.xcnvs <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/xcnvsLCRC7.16.18withSampleNames.csv",  header = TRUE, stringsAsFactors = FALSE, sep=",")
+   
+   XHMM.xcnvs <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/xhmmDATA.xcnv",  header = TRUE, stringsAsFactors = FALSE, sep="\t")
+
+   #GATK.xcnvs <- read.table(file="????",  header = TRUE, stringsAsFactors = FALSE, sep=",")
+  
+codeNamesTable <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/GELLC_Decoded.xls%20-%20All%20Samples.tsv",  header = TRUE, stringsAsFactors = FALSE, sep="\t")[,1:2]
+
+#match and replace the file names in CANOES.xcnvs with the Sample ID
+for(i in unique(CANOES.xcnvs$SAMPLE)){
+  CANOES.xcnvs$SAMPLE[which(CANOES.xcnvs$SAMPLE==i)] <- codeNamesTable$submitted.sample.id[which(codeNamesTable$file.path == i)]
+  }
+
+
+# compare sample names in the two tables: setdiff(c(1:10),seq(1,10, by=2)) 
+#setdiff(unique(CANOES.xcnvs$SAMPLE), unique(XHMM.xcnvs$SAMPLE)) # output  "H_NK-34GELCC15-34015", output of the reverse is character(0)
+#length(unique(CANOES.xcnvs$SAMPLE)) # is 203
+#length(unique(XHMM.xcnvs$SAMPLE)) # is 
+################# NOTE!!!! XHMM has 202 samples, where CANOES has 203. I checked the input when running XHMM and all 203 files were passed to it.
+
+
+CNVnums <- data.frame(SAMPLE=unique(CANOES.xcnvs$SAMPLE))
+
+#Quickly tally up the number of calls per sample # Maybe I could do this with an sapply/lapply, but i'm not sure how...
+for(i in unique(CANOES.xcnvs$SAMPLE)){
+    w <- which(CNVnums$SAMPLE==i)
+    CNVnums$CANOES.CNVs[w] <- length(which(CANOES.xcnvs==i))
+    CNVnums$XHMM.CNVs[w] <- length(which(XHMM.xcnvs==i))
+    CNVnums$XHMMminusCANOES[w] <- CNVnums$XHMM.CNVs[w]-CNVnums$CANOES.CNVs[w]
+}
+
+#write.table(CNVnums, file="C:/Users/Public/diffNumCNV.tsv", row.names=FALSE, quote=TRUE, sep="\t")
