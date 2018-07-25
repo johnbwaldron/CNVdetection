@@ -482,6 +482,19 @@ Note: I did not include annotated intervals in its first run 12:20 7/25/18 outpu
    --output-prefix GELCC_203_CNV
  
 
+/home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk PostprocessGermlineCNVCalls \
+     --calls-shard-path /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/shard_1-calls
+     --calls-shard-path /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/shard_2-calls
+     --model-shard-path /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/shard_1-model
+     --model-shard-path /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/shard_2-model
+     --sample-index 0
+     --autosomal-ref-copy-number 2
+     --allosomal-contig X
+     --allosomal-contig Y
+     --output-genotyped-intervals sample_0_genotyped_intervals.vcf
+     --output-genotyped-segments sample_0_genotyped_segments.vcf
+ 
+
 
 ##################################################################################################
 uploading the BAM files:
