@@ -1,9 +1,19 @@
 #Rterm.exe --vanilla
 
+#source("https://bioconductor.org/biocLite.R")
+install.packages("stringi")
+#biocLite("GenomicRanges")
+#biocLite('genomation')
+library(AnnotationHub)
+library("GenomicRanges")
+library("genomation")
+
 library("nnls")
 library("Hmisc")
 library("mgcv")
 library("plyr")
+
+
 
 # load xcnvs
    CANOES.xcnvs <- read.table(file="https://raw.githubusercontent.com/johnbwaldron/CNVdetection/master/xcnvsLCRC7.16.18withSampleNames.csv",  header = TRUE, stringsAsFactors = FALSE, sep=",")
@@ -38,3 +48,38 @@ for(i in unique(CANOES.xcnvs$SAMPLE)){
 }
 
 #write.table(CNVnums, file="C:/Users/Public/diffNumCNV.tsv", row.names=FALSE, quote=TRUE, sep="\t")
+
+#http://bioconductor.org/packages/release/BiocViews.html#___TxDb
+
+#divide up the interval to add new columns: StarT and StoP
+   # for CANOES.xcnvs
+   foo <- data.frame(do.call('rbind', strsplit(as.character(CANOES.xcnvs$INTERVAL),':',fixed=TRUE)))
+   foo2 <- data.frame(do.call('rbind', strsplit(as.character(foo[,2]),'-',fixed=TRUE)))
+   colnames(foo2) <- c("StarT", "StoP")
+   CANOES.xcnvs <- cbind(CANOES.xcnvs, foo2)
+   # for XHMM.xcnvs
+   foo <- data.frame(do.call('rbind', strsplit(as.character(XHMM.xcnvs$INTERVAL),':',fixed=TRUE)))
+   foo2 <- data.frame(do.call('rbind', strsplit(as.character(foo[,2]),'-',fixed=TRUE)))
+   colnames(foo2) <- c("StarT", "StoP")
+   XHMM.xcnvs <- cbind(XHMM.xcnvs, foo2)
+
+CANOES.xcnvs$CHR <- paste("chr", CANOES.xcnvs$CHR, sep="")
+XHMM.xcnvs$CHR <- paste("chr", XHMM.xcnvs$CHR, sep="")
+
+hg19 <- Seqinfo(genome="hg19")
+seqnames(hg19)
+CANOES.GRanges <- makeGRangesFromDataFrame(CANOES.xcnvs[1:6,], keep.extra.columns=TRUE,
+                         ignore.strand=TRUE,
+                         seqinfo=hg19,
+                         seqnames.field="CHR",
+                         start.field="StarT",
+                         end.field="StoP") 
+
+install.packages("TxDb.Hsapiens.UCSC.hg19.knownGene")
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+
+annotateWithGeneParts 
+
+
+
+
