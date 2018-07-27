@@ -1,9 +1,10 @@
 #Rterm.exe --vanilla
 
 #source("https://bioconductor.org/biocLite.R")
-install.packages("stringi")
+#install.packages("stringi")
 #biocLite("GenomicRanges")
 #biocLite('genomation')
+#biocLite('AnnotationHub')
 library(AnnotationHub)
 library("GenomicRanges")
 library("genomation")
@@ -74,11 +75,14 @@ CANOES.GRanges <- makeGRangesFromDataFrame(CANOES.xcnvs[1:6,], keep.extra.column
                          seqnames.field="CHR",
                          start.field="StarT",
                          end.field="StoP") 
+ah <- AnnotationHub()
+ ah <- subset(ah, species == "Homo sapiens")
+  ah <- subset(ah, genome == "hg19")
+  ah <- query(ah, c("hg19", "annotation", "CDS")) #coriell cnv?
+  ah <- ah[[1]]
 
-install.packages("TxDb.Hsapiens.UCSC.hg19.knownGene")
-library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 
-annotateWithGeneParts 
+annotateWithGeneParts(CANOES.GRanges, ah) #### this is what i need to try!!!!!
 
 
 
