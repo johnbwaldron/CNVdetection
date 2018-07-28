@@ -76,3 +76,9 @@ The next lines line up the query column identifier (e.g., gene SYMBOL) that over
     f1 <- factor(subjectHits(olaps), levels=seq_len(subjectLength(olaps)))
     splitAsList(mcols(x)[[column]][queryHits(olaps)], f1)
 the use of factor() with exactly as many levels as there are subjects ensures that the splitAsList() command returns a 1:1 mapping between the subjects (copy number regions) and the genes in the corresponding CharacterList.
+
+
+
+# convert granges to df: as.data.frame(gr)
+# Paste the elements of a CharacterList x  into a character vector with paste(x, collapse=", ")
+# 
