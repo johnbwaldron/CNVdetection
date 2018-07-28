@@ -1,0 +1,21 @@
+library(biomaRt)
+
+mart <- useMart(biomart="ensembl", dataset="hsapiens_gene_ensembl")
+results <- getBM(attributes = c("hgnc_symbol", "chromosome_name", 
+                                 "start_position", "end_position"),
+                 filters = c("chromosome_name", "start", "end"), 
+                 values=list(1, 94312388, 96000000),
+                 mart=mart)
+dim(results)  # 34 hits, only 12 with gene symbols
+If you are reading your data from a file (the TCGA level 3 data you mentioned), and if you wish to filter the regions, this approach may be useful:
+
+library(GenomicRanges)
+filename <- "TRIBE_p_TCGAaffx_B1_2_GBM_Nsp_GenomeWideSNP_6_A01_155716.nocnv_hg19.seg.txt"
+tbl <- read.table(filename, sep="\t", as.is=TRUE, header=TRUE);
+gr <- makeGRangesFromDataFrame(tbl)
+With the data in a standard Bioconductor GRanges object, filtering the data becomes easy.  Let's submit just very short copy number regions to biomaRt:
+
+gr.short <- subset(gr, width < 100)
+length(gr) # 117 regions
+length(gr.short) # just 2 regions
+gr.short
