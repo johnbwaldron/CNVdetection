@@ -81,9 +81,13 @@ ah <- AnnotationHub()
   ah <- query(ah, c("hg19", "annotation", "CDS")) #coriell cnv?
   ah <- ah[[1]]
 
+I need to use findOverlaps where canoes and xhmm are the objects, where do they overlap?
 
-annotateWithGeneParts(CANOES.GRanges, ah) #### this is what i need to try!!!!!
+subsetByOverlaps(CANOES.GRanges, XHMM.GRanges)
 
+findOverlaps(CANOES.GRanges, ah, select="first") #### this is what i need to try!!!!!
 
+#Table Schema: https://genome.ucsc.edu/cgi-bin/hgTables
+gtf <- read.table(file="C:/Users/Public/UCSChg19GTF.gtf",  col.names = c("name", "chrom", "strand", "txStart", "txEnd", "cdsStart", "cdsEnd", "exonCount", "exonStarts", "exonEnds", "proteinID", "alignID"), stringsAsFactors = FALSE, sep="\t")
 
-
+gtf <- read.table(file="C:/Users/Public/UCSChg19GTF.gtf", sep="\t")
