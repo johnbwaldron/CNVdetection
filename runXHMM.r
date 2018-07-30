@@ -248,29 +248,40 @@ fc05d60228e44ae6bd46324830871f17.out.sample_interval_summary --GATKdepths \
 fdc852d7b18a4f3a83e449891c232823.out.sample_interval_summary
 
 #############################################################################################33
-Skip for now because I get "permission denied" message
+Skipped (7/23/18) because I got "permission denied" message
 # run PLINK/Seq to calculate the fraction of repeat-masked bases in each target and create a list of those to filter out:
 
-/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/sources/scripts/interval_list_to_pseq_reg /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed > ./EXOME.targets.reg
+/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/sources/scripts/interval_list_to_pseq_reg /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed > /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/EXOME.targets.reg
 
-/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plink-1.07-x86_64/pseq . loc-load --locdb ./EXOME.targets.LOCDB --file ./EXOME.targets.reg --group targets --out ./EXOME.targets.LOCDB.loc-load
+#####run from: /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files
 
-pseq . loc-stats --locdb ./EXOME.targets.LOCDB --group targets --seqdb ./seqdb | \
-awk '{if (NR > 1) print $_}' | sort -k1 -g | awk '{print $10}' | paste ./EXOME.interval_list - | \
-awk '{print $1"\t"$2}' \
-> ./DATA.locus_complexity.txt
+#Create LOCDB just like SEQDB, but first create gtf
+/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plinkseq-0.10/pseq . loc-load --file /home/BIO/johnw/GELCC_WES_RAW_Data/b37GTF.gtf --group refseq --locdb locdb
 
-cat ./DATA.locus_complexity.txt | awk '{if ($2 > 0.25) print $1}' \
-> ./low_complexity_targets.txt
+
+
+
+/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plinkseq-0.10/pseq . loc-load --locdb ./locdb --file ./EXOME.targets.reg --group targets --out ./EXOME.targets.LOCDB.loc-load
+
+#to get the following step to work, seqdb was necessary: http://atgu.mgh.harvard.edu/plinkseq/resources.shtml
+/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plinkseq-0.10/pseq . seq-load --file /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta --seqdb seqdb --name b37 --description from-UCSC-20-dec-2010 --format build=hg18 repeat-mode=lower
+
+/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plinkseq-0.10/pseq . seq-summary --seqdb seqdb
+
+/home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/plinkseq-0.10/pseq . loc-stats --locdb ./EXOME.targets.LOCDB --group targets --seqdb /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/seqdb | awk '{if (NR > 1) print $_}' | sort -k1 -g | awk '{print $10}' | paste /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed - | awk '{print $1"\t"$2}' > ./DATA.locus_complexity.txt
+
+cat ./DATA.locus_complexity.txt | awk '{if ($2 > 0.25) print $1}' > ./low_complexity_targets.txt
 
 #########################################################################################3
 #Filters samples and targets and then mean-centers the targets:
- #!!!!!!!!!!! excluded exclusion of extreme samples and targets
+ #!!!!!!!!!!! run on 7/23/18 did not include: "--excludeTargets ./low_complexity_targets.txt"
+#run on 7/25/18 included: "--excludeTargets ./low_complexity_targets.txt"
 
 /home/BIO/johnw/GELCC_WES_RAW_Data/GATK3.8/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef/xhmm --matrix -r ./DATA.RD.txt --centerData --centerType target \
 -o ./DATA.filtered_centered.RD.txt \
 --outputExcludedTargets ./DATA.filtered_centered.RD.txt.filtered_targets.txt \
 --outputExcludedSamples ./DATA.filtered_centered.RD.txt.filtered_samples.txt \
+--excludeTargets ./low_complexity_targets.txt \
 --excludeTargets ./extreme_gc_targets.txt \
 --minTargetSize 10 --maxTargetSize 10000 \
 --minMeanTargetRD 10 --maxMeanTargetRD 500 \
@@ -313,27 +324,6 @@ cat ./DATA.locus_complexity.txt | awk '{if ($2 > 0.25) print $1}' \
 -r ./DATA.PCA_normalized.filtered.sample_zscores.RD.txt -R ./DATA.same_filtered.RD.txt \
 -g ./DATA.xcnv -F /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta \
 -v ./DATA.vcf
-
-
-
-
-############################ I could use GATK 4.0 for read depth################################3333
-https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.5.0/org_broadinstitute_hellbender_tools_CountReads.php
-
-find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | 
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
