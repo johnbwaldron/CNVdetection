@@ -269,13 +269,15 @@ source activate gatk
 
 Note: I did not include annotated intervals in its first run 12:20 7/25/18 output to:  /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller
 
+source activate gatk
+
 /home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk GermlineCNVCaller \
    --run-mode COHORT \
    -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
    --annotated-intervals /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/annotated_intervals.tsv \
    --interval-merging-rule OVERLAPPING_ONLY \
    --contig-ploidy-calls /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/contigPloidy/GELCC_203.-calls \
-   --input 0110663a349e483d985fa10e0f96108bsample.counts.hdf5 \
+--input 0110663a349e483d985fa10e0f96108bsample.counts.hdf5 \
 --input 026f78c95dd34296a4b9cf35adc3848dsample.counts.hdf5 \
 --input 04d99dcb24ca482b83a58164d415244csample.counts.hdf5 \
 --input 05170a5209af47269da8301ac6c0515bsample.counts.hdf5 \
@@ -480,7 +482,8 @@ Note: I did not include annotated intervals in its first run 12:20 7/25/18 outpu
 --input fdc852d7b18a4f3a83e449891c232823sample.counts.hdf5 \
    --output /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/CNVcallerWithAnnotatedIntervals \
    --output-prefix GELCC_203_CNV
- 
+
+Started at 1:45 on 7/30/18 
 
 /home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk PostprocessGermlineCNVCalls \
      --calls-shard-path /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/shard_1-calls
