@@ -13,9 +13,12 @@ find /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT -name "*.bam" | gnu_para
           --format TSV \
           --interval-merging-rule OVERLAPPING_ONLY \
           -O {/.}.counts.tsv'
-          
-          
+
+#Started CollectReadCounts at 4:55pm 8/6/18
+## NEXT, I need to run DetermineGermlineContigPloidy on the ~ 31 counts.tsv files 
+
 #### DetermineGermlineContigPloidy
+
 source activate gatk
 
 /home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk DetermineGermlineContigPloidy \
@@ -36,3 +39,25 @@ source activate gatk
    --contig-ploidy-priors /home/BIO/johnw/GELCC_WES_RAW_Data/contigPloidyPriors.tsv \
    --output /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/contigPloidyTSVs \
    --output-prefix GELCC_203
+
+
+
+#################GermlineCNVCaller
+
+/home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk GermlineCNVCaller \
+   --run-mode COHORT \
+    -L /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/Agilent_SureSelect_v5UTRs_editedREMOVEDsexChr.bed \
+    --annotated-intervals /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/annotated_intervals.tsv \
+    --interval-merging-rule OVERLAPPING_ONLY \
+   --contig-ploidy-calls /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/contigPloidy/GELCC_203.-calls \
+ --input 0110663a349e483d985fa10e0f96108bsample.counts.hdf5 \
+ --input 026f78c95dd34296a4b9cf35adc3848dsample.counts.hdf5 \
+ --input 04d99dcb24ca482b83a58164d415244csample.counts.hdf5 \
+ --input 05170a5209af47269da8301ac6c0515bsample.counts.hdf5 \
+ --input 05578ce853ed4c4592d79c53d8813294sample.counts.hdf5 \
+ --input 0833d5d7a80a45c3bc2ed6a8c93eae11sample.counts.hdf5 \
+ --input 08dcd374d4624578a23f855c427e3749sample.counts.hdf5 \
+ --input 0a907f8895cc4e13a81b5494ef39e58asample.counts.hdf5 \
+ --input 0ad24e40c61247f2aeb07ff7e3fe1e68sample.counts.hdf5 \
+    --output /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/CNVcallerWithAnnotatedIntervals \
+    --output-prefix GELCC_203_CNV
