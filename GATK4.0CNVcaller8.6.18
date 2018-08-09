@@ -19,6 +19,28 @@ find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | gnu_pa
           --interval-merging-rule OVERLAPPING_ONLY \
           -O {/.}.counts.tsv'
 
+
+#33perhaps I need to collectFragmentCounts
+
+find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | gnu_parallel '/home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk CollectFragmentCounts \
+          -I {} \
+          -L /home/BIO/johnw/GELCC_WES_RAW_Data/Agilent_SureSelect_v5UTRs_edited.bed \
+          -R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta \
+          --format TSV \
+          --interval-merging-rule OVERLAPPING_ONLY \
+          -O {/.}.fragmentcounts.tsv'
+###########!!!!!!!!!!!!!!!!collect fragment counts is not a command?
+
+#https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/org_broadinstitute_hellbender_tools_copynumber_CollectFragmentCounts.php
+
+
+
+
+
+
+
+
+
 #Started CollectReadCounts at 4:55pm 8/6/18
 ## NEXT, I need to run DetermineGermlineContigPloidy on the ~ 31 counts.tsv files 
 
@@ -60,3 +82,7 @@ source activate gatk
 --input e2b78536be7144a5b32c6880e4de32a6.counts.tsv \
 --output /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/CNVcaller/CNVcallerWithTSV.8Samples.8.7.18 \
 --output-prefix GELCC_203_CNV_TSV_8Samples
+
+
+# started running germline CNV caller at 4:25 on 8/9/18 
+# next, I need to see if it worked, or at least produced reasonable results. Then, I will run it for all samples.
