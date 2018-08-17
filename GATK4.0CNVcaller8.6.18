@@ -102,7 +102,7 @@ find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | gnu_pa
           -O /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/hdf5remakes/{/.}.counts.hdf5'
 
 ###############
-############## started 8/17/18 1:15pm 
+############## started 8/17/18 1:53pm 
 ### using .bed file was aquired directly from Agilent SureDesign Website for the SureSelect Human All Exon V5+UTRs (design ID = S04380219) using reference hg19. It is padded by 100bp up and downstream.
 ## note: i also tried using the ucsc.hg19 reference genome because it uses "chr#" as the straight from agilent bed file does. HOWEVER!
 #HOWEVER, THE READS ARE MAPPED TO CONTIGS WITH NAMES THAT DON'T INCLUDE "CHR".
