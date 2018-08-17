@@ -104,12 +104,18 @@ find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | gnu_pa
 ###############
 ############## started 8/17/18 1:15pm 
 ### using .bed file was aquired directly from Agilent SureDesign Website for the SureSelect Human All Exon V5+UTRs (design ID = S04380219) using reference hg19. It is padded by 100bp up and downstream.
-## note: i also tried using the ucsc.hg19 reference genome because it uses "chr#" as the straight from agilent bed file does.
+## note: i also tried using the ucsc.hg19 reference genome because it uses "chr#" as the straight from agilent bed file does. HOWEVER!
+#HOWEVER, THE READS ARE MAPPED TO CONTIGS WITH NAMES THAT DON'T INCLUDE "CHR".
+
+#######edit bed from aiglent to eliminate chr# format
+
+sed 's/chr//g' S04380219_Padded.bed > S04380219_Padded_chr_removed.bed
+
 
 find /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files -name "*.bam" | gnu_parallel '/home/BIO/johnw/GELCC_WES_RAW_Data/gatk-4.0.6.0/gatk CollectReadCounts \
           -I {} \
-          -L /home/BIO/johnw/GELCC_WES_RAW_Data/S04380219_Padded.bed \
-          -R /home/BIO/johnw/GELCC_WES_RAW_Data/ucsc.hg19.fasta \
+          -L /home/BIO/johnw/GELCC_WES_RAW_Data/2_GELCC_bam_files/S04380219_Padded_chr_removed.bed \
+          -R /home/BIO/johnw/GELCC_WES_RAW_Data/human_g1k_v37.fasta \
           --format HDF5 \
           --interval-merging-rule OVERLAPPING_ONLY \
           -O /home/BIO/johnw/GELCC_WES_RAW_Data/OUT.GATK4.0.OUT/S04380219_padded.bedWithhg19reference/{/.}.counts.hdf5'
