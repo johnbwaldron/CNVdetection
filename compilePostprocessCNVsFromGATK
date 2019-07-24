@@ -1,6 +1,7 @@
 # access one drive in ubuntu
 # acess onedrive in ubuntu
 # wget --no-check-certificate "https://lsuhsc-my.sharepoint.com/:f:/g/personal/jwaldr_lsuhsc_edu/Emom4oc0CBlGtgSnvbGnbL4BV829VP4MxfjlNdsE6RB9eg?e=WdHNyk"
+# gunzip *.gz
 
 #Rterm.exe --vanilla
 #install.packages(c("nnls", "Hmisc", "mgcv", "plyr"))
