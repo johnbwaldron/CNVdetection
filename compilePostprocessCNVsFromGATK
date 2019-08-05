@@ -1,9 +1,18 @@
-# access one drive in ubuntu
-# acess onedrive in ubuntu
-# wget --no-check-certificate "https://lsuhsc-my.sharepoint.com/:f:/g/personal/jwaldr_lsuhsc_edu/Emom4oc0CBlGtgSnvbGnbL4BV829VP4MxfjlNdsE6RB9eg?e=WdHNyk"
-# gunzip *.gz
 
 #Rterm.exe --vanilla
+
+# read in file with names of all .tsv files with post-preocessed information
+
+fileNames <- read.delim("C:/Users/jwaldr/OneDrive\ -\ LSUHSC/postProcessesFileNames.tsv",header=F, colClasses = "character")[,1]
+
+for (i in fileNames){
+    cat(i)
+    }
+
+
+
+
+
 #install.packages(c("nnls", "Hmisc", "mgcv", "plyr"))
 # Not necessary to load the libraries because they're loaded in the CANOES.R functions
 #library("nnls")
